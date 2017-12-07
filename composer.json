@@ -1,0 +1,26 @@
+{
+    "name": "arhone/storage",
+    "description": "Хранилище данных (ключ - значение) (PHP 7)",
+    "homepage": "https://github.com/arhone/storage",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Алексей Арх",
+            "email": "info@arh.one"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "arhone\\storage\\": ""
+        },
+        "classmap": [
+            "StorageInterface.php",
+            "Storage.php"
+        ]
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.0"
+    }
+}
