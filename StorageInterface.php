@@ -6,6 +6,7 @@ namespace arhone\storage;
  *
  * Interface StorageInterface
  * @package arhone\storage
+ * @author Алексей Арх <info@arh.one>
  */
 interface StorageInterface {
 

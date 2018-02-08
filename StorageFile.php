@@ -6,6 +6,7 @@ namespace arhone\storage;
  *
  * Class Storage
  * @package arhone\storage
+ * @author Алексей Арх <info@arh.one>
  */
 class Storage implements StorageInterface {
 
