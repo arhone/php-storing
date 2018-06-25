@@ -1,14 +1,15 @@
 <?php declare(strict_types = 1);
+
 namespace arhone\storage;
 
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Class Storage
+ * Class StorageFile
  * @package arhone\storage
  * @author Алексей Арх <info@arh.one>
  */
-class Storage implements StorageInterface {
+class StorageFile implements StorageInterface {
 
     /**
      * Настройки класса
@@ -20,12 +21,14 @@ class Storage implements StorageInterface {
     ];
 
     /**
-     * CacheFile constructor.
-     * @param array $config
+     * Storage constructor.
+     * @param string $file
      */
-    public function __construct (array $config = []) {
+    public function __construct (string $file) {
 
-        $this->config($config);
+        $this->config([
+            'file' => $file
+        ]);
 
     }
 
@@ -37,6 +40,21 @@ class Storage implements StorageInterface {
      */
     public function get (string $key) {
 
+        $path = $this->getPath($key);
+        if (is_file($path)) {
+
+            $data = unserialize(file_get_contents($path));
+            if (!empty($data['remove']) && $data['remove'] < time()) {
+
+                return false;
+
+            }
+
+            return $data['data'] ?? false;
+
+        }
+
+        return null;
 
     }
 
@@ -50,6 +68,21 @@ class Storage implements StorageInterface {
      */
     public function set (string $key, $data, int $interval = null) : bool {
 
+        $path = $this->getPath($key);
+        $dir  = dirname($path);
+        if (!is_dir($dir)) {
+
+            mkdir($dir, 0700, true);
+
+        }
+
+        $data = [
+            'created' => time(),
+            'remove'  => $interval ? time() + $interval : null,
+            'data'    => $data
+        ];
+
+        return file_put_contents($path, serialize($data), LOCK_EX) == true;
 
     }
 
@@ -61,7 +94,74 @@ class Storage implements StorageInterface {
      */
     public function delete (string $key) : bool {
 
+        return $this->deleteRecursive($this->getPath($key));
 
+    }
+
+    /**
+     * Рекурсивное удаление файлов
+     *
+     * @param $path
+     * @return bool
+     */
+    protected function deleteRecursive ($path) : bool {
+
+        if (is_dir($path)) {
+
+            foreach (scandir($path) as $file) {
+
+                if ($file != '.' && $file != '..') {
+
+                    if (is_file($file)) {
+
+                        unlink($file);
+
+                    } else {
+
+                        $this->deleteRecursive($path . DIRECTORY_SEPARATOR . $file);
+
+                    }
+
+                }
+
+            }
+
+            if(count(glob($path . '*')) ? true : false) {
+
+                return rmdir($path);
+
+            }
+
+        } elseif (is_file($path)) {
+
+            return unlink($path);
+
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Возврщает путь до файла
+     *
+     * @param string $key
+     * @return string
+     */
+    protected function getPath (string $key) : string {
+
+        $path = $this->config['directory'] . DIRECTORY_SEPARATOR . str_replace('.', DIRECTORY_SEPARATOR, $key);
+        if (is_dir($path) || is_file($path)) {
+
+            return $path;
+
+        } else {
+
+            $dir  = dirname($path);
+            $hash = md5(basename($path));
+            return $dir . DIRECTORY_SEPARATOR . '.' . $hash[0] . $hash[1] . DIRECTORY_SEPARATOR . '.' . $hash[2] . $hash[3] . DIRECTORY_SEPARATOR . '.' . $hash;
+
+        }
     }
 
     /**
@@ -72,6 +172,7 @@ class Storage implements StorageInterface {
      */
     public function has (string $key) : bool {
 
+        return !empty($this->getPath($key));
 
     }
 
