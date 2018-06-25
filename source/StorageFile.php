@@ -63,10 +63,9 @@ class StorageFile implements StorageInterface {
      *
      * @param string $key
      * @param $data
-     * @param int|null $interval
      * @return bool
      */
-    public function set (string $key, $data, int $interval = null) : bool {
+    public function set (string $key, $data) : bool {
 
         $path = $this->getPath($key);
         $dir  = dirname($path);
@@ -75,12 +74,6 @@ class StorageFile implements StorageInterface {
             mkdir($dir, 0700, true);
 
         }
-
-        $data = [
-            'created' => time(),
-            'remove'  => $interval ? time() + $interval : null,
-            'data'    => $data
-        ];
 
         return file_put_contents($path, serialize($data), LOCK_EX) == true;
 

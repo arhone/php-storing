@@ -15,10 +15,9 @@ interface StorageInterface {
      *
      * @param string $key
      * @param $data
-     * @param int|null $interval
      * @return bool
      */
-    public function set (string $key, $data, int $interval = null) : bool ;
+    public function set (string $key, $data) : bool ;
 
     /**
      * Возвращает значение файла
