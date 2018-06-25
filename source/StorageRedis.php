@@ -28,10 +28,12 @@ class StorageRedis implements StorageInterface {
     /**
      * StorageRedis constructor.
      * @param \Redis $Redis
+     * @param array $config
      */
-    public function __construct (\Redis $Redis) {
+    public function __construct (\Redis $Redis, array $config = []) {
 
         $this->Redis = $Redis;
+        $this->config($config);
 
     }
 
