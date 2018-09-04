@@ -3,10 +3,8 @@
 return [
     'Storage' => [
         'class' => 'arhone\storing\ContainerFileSystemAdapter',
-        'construction' => [
-            [
-                'directory' => __DIR__ . '/../../../storage'
-            ]
+        'construct' => [
+            'directory' => __DIR__ . '/../../../storage'
         ]
     ],
     'Registry' => [
