@@ -10,7 +10,7 @@ return [
     'Registry' => [
         'class' => 'arhone\storing\StorageMemoryAdapter'
     ],
-    'Configuration' => [
+    'Config' => [
         'class' => 'arhone\storing\StorageMemoryAdapter'
     ]
 ];
