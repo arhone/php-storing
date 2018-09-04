@@ -85,6 +85,29 @@ class ContainerRedisAdapter implements ContainerInterface {
     }
 
     /**
+     * Наполнение контейнера
+     *
+     * @param array $data
+     * @return void
+     */
+    public function fill (array $data) : void {
+
+        foreach ($data as $key => $value) {
+            $this->set($key, $value);
+        }
+
+    }
+
+    /**
+     * Очистить контейнер
+     */
+    public function clear () : void {
+
+        $this->Redis->flushDB();
+
+    }
+
+    /**
      * Задаёт конфигурацию
      *
      * @param array $configuration

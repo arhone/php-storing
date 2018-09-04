@@ -85,6 +85,27 @@ class ContainerMemoryAdapter implements ContainerInterface {
     }
 
     /**
+     * Наполнение контейнера
+     *
+     * @param array $data
+     * @return void
+     */
+    public function fill (array $data) : void {
+
+        $this->memory = $data;
+
+    }
+
+    /**
+     * Очистить контейнер
+     */
+    public function clear () : void {
+
+        $this->memory = [];
+
+    }
+
+    /**
      * Задаёт конфигурацию
      *
      * @param array $configuration
@@ -95,6 +116,5 @@ class ContainerMemoryAdapter implements ContainerInterface {
         return array_merge($this->configuration, $configuration);
 
     }
-
 
 }

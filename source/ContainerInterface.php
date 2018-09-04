@@ -34,7 +34,7 @@ interface ContainerInterface {
      * @param string $key
      * @return bool
      */
-    public function has (string $key) : bool ;
+    public function has (string $key) : bool;
 
     /**
      * Удаление значения
@@ -43,6 +43,19 @@ interface ContainerInterface {
      * @return void
      */
     public function delete (string $key) : void;
+
+    /**
+     * Наполнение контейнера
+     *
+     * @param array $data
+     * @return void
+     */
+    public function fill (array $data) : void;
+
+    /**
+     * Очистить контейнер
+     */
+    public function clear () : void;
 
     /**
      * Задаёт конфигурацию
