@@ -1,7 +1,7 @@
 {
-    "name": "arhone/storage",
-    "description": "Абстрактное хранилище данных (ключ - значение) (PHP 7)",
-    "homepage": "https://github.com/arhone/storage",
+    "name": "arhone/storing",
+    "description": "Библиотека для хранения данных (PHP 7)",
+    "homepage": "https://github.com/arhone/storing",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -12,12 +12,13 @@
     ],
     "autoload": {
         "psr-4": {
-            "arhone\\storage\\": "source/"
+            "arhone\\storing\\": "source/"
         },
         "classmap": ["source/"]
     },
     "minimum-stability": "stable",
     "require": {
-        "php": "^7.0"
+        "ext-redis": "*",
+        "php": ">=7.1"
     }
 }

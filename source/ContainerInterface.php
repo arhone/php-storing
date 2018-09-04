@@ -1,23 +1,24 @@
 <?php declare(strict_types = 1);
-namespace arhone\storage;
+
+namespace arhone\storing;
 
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Interface StorageInterface
- * @package arhone\storage
+ * Interface ContainerInterface
+ * @package arhone\storing
  * @author Алексей Арх <info@arh.one>
  */
-interface StorageInterface {
+interface ContainerInterface {
 
     /**
      * Записывает значение в файл
      *
      * @param string $key
      * @param $data
-     * @return bool
+     * @return void
      */
-    public function set (string $key, $data) : bool ;
+    public function set (string $key, $data) : void;
 
     /**
      * Возвращает значение файла
@@ -31,24 +32,24 @@ interface StorageInterface {
      * Проверяет существует ли ключ
      *
      * @param string $key
-     * @return mixed
+     * @return bool
      */
-    public function has (string $key);
+    public function has (string $key) : bool ;
 
     /**
      * Удаление значения
      *
      * @param string $key
-     * @return bool
+     * @return void
      */
-    public function delete (string $key) : bool ;
+    public function delete (string $key) : void;
 
     /**
      * Задаёт конфигурацию
      *
-     * @param array $config
+     * @param array $configuration
      * @return array
      */
-    public function config (array $config) : array;
+    public function configuration (array $configuration) : array;
 
 }

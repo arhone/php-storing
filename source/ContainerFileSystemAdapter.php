@@ -1,34 +1,32 @@
 <?php declare(strict_types = 1);
 
-namespace arhone\storage;
+namespace arhone\storing;
 
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Class StorageFile
- * @package arhone\storage
+ * Class ContainerFileSystemAdapter
+ * @package arhone\storing
  * @author Алексей Арх <info@arh.one>
  */
-class StorageFile implements StorageInterface {
+class ContainerFileSystemAdapter implements ContainerInterface {
 
     /**
      * Настройки класса
      *
      * @var array
      */
-    protected $config = [
-        'file' => __DIR__ . '/storage/storage.s'
+    protected $configuration = [
+        'directory' => __DIR__ . '/storage'
     ];
 
     /**
-     * Storage constructor.
-     * @param string $file
+     * ContainerFileSystemAdapter constructor.
+     * @param array $configuration
      */
-    public function __construct (string $file) {
+    public function __construct (array $configuration) {
 
-        $this->config([
-            'file' => $file
-        ]);
+        $this->configuration($configuration);
 
     }
 
@@ -63,9 +61,8 @@ class StorageFile implements StorageInterface {
      *
      * @param string $key
      * @param $data
-     * @return bool
      */
-    public function set (string $key, $data) : bool {
+    public function set (string $key, $data) : void {
 
         $path = $this->getPath($key);
         $dir  = dirname($path);
@@ -75,7 +72,7 @@ class StorageFile implements StorageInterface {
 
         }
 
-        return file_put_contents($path, serialize($data), LOCK_EX) == true;
+        file_put_contents($path, serialize($data), LOCK_EX);
 
     }
 
@@ -83,11 +80,10 @@ class StorageFile implements StorageInterface {
      * Удаление значения
      *
      * @param string $key
-     * @return bool
      */
-    public function delete (string $key) : bool {
+    public function delete (string $key) : void {
 
-        return $this->deleteRecursive($this->getPath($key));
+        $this->deleteRecursive($this->getPath($key));
 
     }
 
@@ -143,7 +139,7 @@ class StorageFile implements StorageInterface {
      */
     protected function getPath (string $key) : string {
 
-        $path = $this->config['directory'] . DIRECTORY_SEPARATOR . str_replace('.', DIRECTORY_SEPARATOR, $key);
+        $path = $this->configuration['directory'] . DIRECTORY_SEPARATOR . str_replace('.', DIRECTORY_SEPARATOR, $key);
         if (is_dir($path) || is_file($path)) {
 
             return $path;
@@ -172,12 +168,12 @@ class StorageFile implements StorageInterface {
     /**
      * Задаёт конфигурацию
      *
-     * @param array $config
+     * @param array $configuration
      * @return array
      */
-    public function config (array $config) : array {
+    public function configuration (array $configuration) : array {
 
-        return $this->config = array_merge($this->config, $config);
+        return $this->configuration = array_merge($this->configuration, $configuration);
 
     }
 

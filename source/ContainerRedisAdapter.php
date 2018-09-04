@@ -1,22 +1,22 @@
 <?php declare(strict_types = 1);
 
-namespace arhone\storage;
+namespace arhone\storing;
 
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Class StorageRedis
- * @package arhone\storage
+ * Class ContainerRedisAdapter
+ * @package arhone\storing
  * @author Алексей Арх <info@arh.one>
  */
-class StorageRedis implements StorageInterface {
+class ContainerRedisAdapter implements ContainerInterface {
 
     /**
      * Настройки класса
      *
      * @var array
      */
-    protected $config = [
+    protected $configuration = [
         'database' => null
     ];
 
@@ -28,12 +28,12 @@ class StorageRedis implements StorageInterface {
     /**
      * StorageRedis constructor.
      * @param \Redis $Redis
-     * @param array $config
+     * @param array $configuration
      */
-    public function __construct (\Redis $Redis, array $config = []) {
+    public function __construct (\Redis $Redis, array $configuration = []) {
 
         $this->Redis = $Redis;
-        $this->config($config);
+        $this->configuration($configuration);
 
     }
 
@@ -54,11 +54,10 @@ class StorageRedis implements StorageInterface {
      *
      * @param string $key
      * @param $data
-     * @return bool
      */
-    public function set (string $key, $data) : bool {
+    public function set (string $key, $data) : void {
 
-        return $this->Redis->set($key, serialize($data)) == true;
+        $this->Redis->set($key, serialize($data));
 
     }
 
@@ -66,11 +65,10 @@ class StorageRedis implements StorageInterface {
      * Удаляет значения
      *
      * @param string $key
-     * @return bool
      */
-    public function delete (string $key) : bool {
+    public function delete (string $key) : void {
 
-        return $this->Redis->del($key) == true;
+        $this->Redis->del($key);
 
     }
 
@@ -89,18 +87,18 @@ class StorageRedis implements StorageInterface {
     /**
      * Задаёт конфигурацию
      *
-     * @param array $config
+     * @param array $configuration
      * @return array
      */
-    public function config (array $config) : array {
+    public function configuration (array $configuration) : array {
 
-        $this->config = array_merge($this->config, $config);
+        $this->configuration = array_merge($this->configuration, $configuration);
 
-        if ((int)$this->config['database']) {
-            $this->Redis->select((int)$this->config['database']);
+        if ((int)$this->configuration['database']) {
+            $this->Redis->select((int)$this->configuration['database']);
         }
 
-        return $this->config;
+        return $this->configuration;
 
     }
 
