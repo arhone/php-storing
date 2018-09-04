@@ -80,7 +80,7 @@ class ContainerMemoryAdapter implements ContainerInterface {
      */
     public function has (string $key) : bool {
 
-        return $this->Redis->exists($key) == true;
+        return isset($this->memory[$key]);
 
     }
 
@@ -92,13 +92,7 @@ class ContainerMemoryAdapter implements ContainerInterface {
      */
     public function configuration (array $configuration) : array {
 
-        $this->configuration = array_merge($this->configuration, $configuration);
-
-        if ((int)$this->configuration['database']) {
-            $this->Redis->select((int)$this->configuration['database']);
-        }
-
-        return $this->configuration;
+        return array_merge($this->configuration, $configuration);
 
     }
 
