@@ -5,32 +5,34 @@ namespace arhone\storing;
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Class ContainerMemoryAdapter
+ * Class StorageRedisAdapter
  * @package arhone\storing
  * @author Алексей Арх <info@arh.one>
  */
-class ContainerMemoryAdapter implements ContainerInterface {
+class StorageRedisAdapter implements StorageInterface {
 
     /**
-     * Хранилище
-     * 
-     * @var array 
+     * Настройки класса
+     *
+     * @var array
      */
-    protected $memory = [];
+    protected $configuration = [
+        'database' => null
+    ];
 
     /**
-     * Настройки
-     * 
-     * @var array 
+     * @var \Redis
      */
-    protected $configuration = [];
-    
+    protected $Redis;
+
     /**
-     * ContainerMemoryAdapter constructor.
+     * StorageRedis constructor.
+     * @param \Redis $Redis
      * @param array $configuration
      */
-    public function __construct (array $configuration = []) {
+    public function __construct (\Redis $Redis, array $configuration = []) {
 
+        $this->Redis = $Redis;
         $this->configuration($configuration);
 
     }
@@ -43,7 +45,7 @@ class ContainerMemoryAdapter implements ContainerInterface {
      */
     public function get (string $key) {
 
-        return $this->memory[$key] ?? null;
+        return $this->Redis->get($key);
 
     }
 
@@ -52,11 +54,10 @@ class ContainerMemoryAdapter implements ContainerInterface {
      *
      * @param string $key
      * @param $data
-     * @return void
      */
     public function set (string $key, $data) : void {
 
-        $this->memory[$key] = $data;
+        $this->Redis->set($key, serialize($data));
 
     }
 
@@ -64,11 +65,10 @@ class ContainerMemoryAdapter implements ContainerInterface {
      * Удаляет значения
      *
      * @param string $key
-     * @return void
      */
     public function delete (string $key) : void {
 
-        unset($this->memory[$key]);
+        $this->Redis->del($key);
 
     }
 
@@ -80,7 +80,7 @@ class ContainerMemoryAdapter implements ContainerInterface {
      */
     public function has (string $key) : bool {
 
-        return isset($this->memory[$key]);
+        return $this->Redis->exists($key) == true;
 
     }
 
@@ -92,16 +92,20 @@ class ContainerMemoryAdapter implements ContainerInterface {
      */
     public function fill (array $data) : void {
 
-        $this->memory = $data;
+        foreach ($data as $key => $value) {
+            $this->set($key, $value);
+        }
 
     }
 
     /**
      * Очистить контейнер
+     *
+     * @return bool
      */
-    public function clear () : void {
+    public function clear () : bool {
 
-        $this->memory = [];
+        return $this->Redis->flushDB() == true;
 
     }
 
@@ -111,10 +115,17 @@ class ContainerMemoryAdapter implements ContainerInterface {
      * @param array $configuration
      * @return array
      */
-    public function configuration (array $configuration) : array {
+    public function configure (array $configuration = []) : array {
 
-        return array_merge($this->configuration, $configuration);
+        $this->configuration = array_merge($this->configuration, $configuration);
+
+        if ((int)$this->configuration['database']) {
+            $this->Redis->select((int)$this->configuration['database']);
+        }
+
+        return $this->configuration;
 
     }
+
 
 }

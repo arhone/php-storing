@@ -5,20 +5,20 @@ namespace arhone\storing;
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Interface ContainerInterface
+ * Interface StorageInterface
  * @package arhone\storing
  * @author Алексей Арх <info@arh.one>
  */
-interface ContainerInterface {
+interface StorageInterface {
 
     /**
      * Записывает значение в файл
      *
      * @param string $key
      * @param $data
-     * @return void
+     * @return bool
      */
-    public function set (string $key, $data) : void;
+    public function set (string $key, $data) : bool;
 
     /**
      * Возвращает значение файла
@@ -40,22 +40,24 @@ interface ContainerInterface {
      * Удаление значения
      *
      * @param string $key
-     * @return void
+     * @return bool
      */
-    public function delete (string $key) : void;
+    public function delete (string $key) : bool;
 
     /**
      * Наполнение контейнера
      *
      * @param array $data
-     * @return void
+     * @return bool
      */
-    public function fill (array $data) : void;
+    public function fill (array $data) : bool;
 
     /**
      * Очистить контейнер
+     *
+     * @return bool
      */
-    public function clear () : void;
+    public function clear () : bool;
 
     /**
      * Задаёт конфигурацию
@@ -63,6 +65,6 @@ interface ContainerInterface {
      * @param array $configuration
      * @return array
      */
-    public function configuration (array $configuration) : array;
+    public function configure (array $configuration = []) : array;
 
 }

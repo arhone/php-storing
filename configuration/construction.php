@@ -2,15 +2,15 @@
 
 return [
     'Storage' => [
-        'class' => 'arhone\storing\ContainerFileSystemAdapter',
+        'class' => 'arhone\storing\StorageFileSystemAdapter',
         'construct' => [
             'directory' => __DIR__ . '/../../../storage'
         ]
     ],
     'Registry' => [
-        'class' => 'arhone\storing\ContainerMemoryAdapter'
+        'class' => 'arhone\storing\StorageMemoryAdapter'
     ],
     'Configuration' => [
-        'class' => 'arhone\storing\ContainerMemoryAdapter'
+        'class' => 'arhone\storing\StorageMemoryAdapter'
     ]
 ];

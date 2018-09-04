@@ -5,11 +5,11 @@ namespace arhone\storing;
 /**
  * Хранилище данных (ключ - значение) (PHP 7)
  *
- * Class ContainerFileSystemAdapter
+ * Class StorageFileSystemAdapter
  * @package arhone\storing
  * @author Алексей Арх <info@arh.one>
  */
-class ContainerFileSystemAdapter implements ContainerInterface {
+class StorageFileSystemAdapter implements StorageInterface {
 
     /**
      * Настройки класса
@@ -21,12 +21,12 @@ class ContainerFileSystemAdapter implements ContainerInterface {
     ];
 
     /**
-     * ContainerFileSystemAdapter constructor.
+     * StorageFileSystemAdapter constructor.
      * @param array $configuration
      */
     public function __construct (array $configuration) {
 
-        $this->configuration($configuration);
+        $this->configure($configuration);
 
     }
 
@@ -61,8 +61,9 @@ class ContainerFileSystemAdapter implements ContainerInterface {
      *
      * @param string $key
      * @param $data
+     * @return bool
      */
-    public function set (string $key, $data) : void {
+    public function set (string $key, $data) : bool {
 
         $path = $this->getPath($key);
         $dir  = dirname($path);
@@ -72,7 +73,7 @@ class ContainerFileSystemAdapter implements ContainerInterface {
 
         }
 
-        file_put_contents($path, serialize($data), LOCK_EX);
+        return file_put_contents($path, serialize($data), LOCK_EX) == true;
 
     }
 
@@ -80,10 +81,11 @@ class ContainerFileSystemAdapter implements ContainerInterface {
      * Удаление значения
      *
      * @param string $key
+     * @return bool
      */
-    public function delete (string $key) : void {
+    public function delete (string $key) : bool {
 
-        $this->deleteRecursive($this->getPath($key));
+        return $this->deleteRecursive($this->getPath($key)) == true;
 
     }
 
@@ -169,22 +171,26 @@ class ContainerFileSystemAdapter implements ContainerInterface {
      * Наполнение контейнера
      *
      * @param array $data
-     * @return void
+     * @return bool
      */
-    public function fill (array $data) : void {
+    public function fill (array $data) : bool {
 
         foreach ($data as $key => $value) {
             $this->set($key, $value);
         }
 
+        return true;
+
     }
 
     /**
      * Очистить контейнер
+     *
+     * @return bool
      */
-    public function clear () : void {
+    public function clear () : bool {
 
-        $this->deleteRecursive($this->configuration['directory']);
+        return $this->deleteRecursive($this->configuration['directory']) == true;
 
     }
 
@@ -194,7 +200,7 @@ class ContainerFileSystemAdapter implements ContainerInterface {
      * @param array $configuration
      * @return array
      */
-    public function configuration (array $configuration) : array {
+    public function configure (array $configuration = []) : array {
 
         return $this->configuration = array_merge($this->configuration, $configuration);
 
